@@ -18,6 +18,7 @@ package org.springframework.social.mailru.api;
 import org.springframework.social.ApiBinding;
 
 public interface Mailru extends ApiBinding {
+    String PROVIDER_ID = "mailru";
 
     public UsersOperations usersOperations();
 

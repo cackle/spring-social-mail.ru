@@ -1,12 +1,14 @@
 package org.springframework.social.mailru.api.impl;
 
+import org.springframework.social.MissingAuthorizationException;
+import org.springframework.social.mailru.api.Mailru;
+import org.springframework.util.DigestUtils;
+
 import java.net.URLEncoder;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import org.springframework.social.MissingAuthorizationException;
-import org.springframework.util.DigestUtils;
 
 public abstract class AbstractMailruOperations {
 
@@ -41,7 +43,7 @@ public abstract class AbstractMailruOperations {
 
     protected void requireAuthorization() {
         if (!isAuthorized) {
-            throw new MissingAuthorizationException();
+            throw new MissingAuthorizationException(Mailru.PROVIDER_ID);
         }
     }
 
@@ -57,12 +59,12 @@ public abstract class AbstractMailruOperations {
             url.append(param).append("=").append(URLEncoder.encode(value)).append("&");
         }
         signature.append(clientSecret);
-        url.append("sig=").append(encodeSignarure(signature.toString()));
+        url.append("sig=").append(encodeSignature(signature.toString()));
 
         return url.toString();
     }
 
-    private String encodeSignarure(String sign) {
+    private String encodeSignature(String sign) {
         return DigestUtils.md5DigestAsHex(sign.getBytes());
     }
 }

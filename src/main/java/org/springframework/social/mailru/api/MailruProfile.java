@@ -15,23 +15,43 @@
  */
 package org.springframework.social.mailru.api;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
+
 /**
  * Model class containing a Mailru user's profile information.
  * @author Cackle
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class MailruProfile {
 
-    private final String uid;
+    private String uid;
 
-    private final String firstName;
+    @JsonProperty("first_name")
+    private String firstName;
 
-    private final String lastName;
+    @JsonProperty("last_name")
+    private String lastName;
 
-    private final String email;
+    private String email;
 
-    private final String link;
+    private String link;
 
+    @JsonProperty("pic_big")
     private String photo;
+
+    private int sex;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="dd.MM.yyyy")
+    private Date birthday;
+
+    public MailruProfile() {
+    }
 
     public MailruProfile(String uid, String firstName, String lastName, String email, String link) {
         this.uid = uid;
@@ -53,16 +73,25 @@ public class MailruProfile {
         return lastName;
     }
 
+    public int getAge() {
+        LocalDate localBirthday = LocalDate.from(birthday.toInstant());
+        return (int) localBirthday.until(LocalDate.now(), ChronoUnit.YEARS);
+    }
+
+    public int getSex() {
+        return sex;
+    }
+
+    public Date getBirthdy() {
+        return birthday;
+    }
+
     public String getEmail() {
         return email;
     }
 
     public String getLink() {
         return link;
-    }
-
-    public void setPhoto(String photo) {
-        this.photo = photo;
     }
 
     public String getPhoto() {

@@ -1,13 +1,13 @@
 package org.springframework.social.mailru.api.impl;
 
-import java.net.URI;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.springframework.social.mailru.api.MailruProfile;
 import org.springframework.social.mailru.api.UsersOperations;
 import org.springframework.social.support.URIBuilder;
 import org.springframework.web.client.RestTemplate;
+
+import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * User operations.
@@ -34,20 +34,11 @@ public class UsersTemplate extends AbstractMailruOperations implements UsersOper
         params.put("method", METHOD);
         URI uri = URIBuilder.fromUri(makeOperationURL(params)).build();
 
-        List<Map<String, String>> profiles = restTemplate.getForObject(uri, List.class);
-        //checkForError(profiles);
-
-        if (!profiles.isEmpty()) {
-            Map<String, String> profilesMap = profiles.get(0);
-            MailruProfile profile = new MailruProfile(profilesMap.get("uid"), profilesMap.get("first_name"),
-                profilesMap.get("last_name"), profilesMap.get("email"), profilesMap.get("link"));
-
-            if (profilesMap.containsKey("pic")) {
-                profile.setPhoto(profilesMap.get("pic"));
-            }
-
-            return profile;
+        MailruProfile[] profiles = restTemplate.getForObject(uri, MailruProfile[].class);
+        if(profiles.length == 1) {
+            return profiles[0];
         }
-        return null;
+
+        throw new IllegalStateException("Invalid answer from server on users.getInfo method");
     }
 }

@@ -1,14 +1,14 @@
 package org.springframework.social.mailru.api.impl;
 
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.social.mailru.api.WallOperations;
+import org.springframework.social.support.URIBuilder;
+import org.springframework.web.client.RestTemplate;
+
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.social.mailru.api.WallOperations;
-import org.springframework.social.support.URIBuilder;
-import org.springframework.web.client.RestTemplate;
 
 public class WallTemplate extends AbstractMailruOperations implements WallOperations {
 
