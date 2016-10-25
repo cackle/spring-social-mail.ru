@@ -7,4 +7,6 @@ package org.springframework.social.mailru.api;
 public interface WallOperations {
 
     String post(String message);
+
+    String post(String message, String link, String photoUrl);
 }

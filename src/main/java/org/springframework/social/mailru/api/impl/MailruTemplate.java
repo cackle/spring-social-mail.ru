@@ -19,10 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.social.mailru.api.Mailru;
-import org.springframework.social.mailru.api.MailruErrorHandler;
-import org.springframework.social.mailru.api.UsersOperations;
-import org.springframework.social.mailru.api.WallOperations;
+import org.springframework.social.mailru.api.*;
 import org.springframework.social.oauth2.AbstractOAuth2ApiBinding;
 
 import java.util.LinkedList;
@@ -44,11 +41,14 @@ public class MailruTemplate extends AbstractOAuth2ApiBinding implements Mailru {
 
     private final String accessToken;
 
-    public MailruTemplate(String clientId, String clientSecret, String accessToken) {
+    private final String privateKey;
+
+    public MailruTemplate(String clientId, String clientSecret, String accessToken, String privateKey) {
         super(accessToken);
         this.clientId = clientId;
         this.clientSecret = clientSecret;
         this.accessToken = accessToken;
+        this.privateKey = privateKey;
         initialize();
     }
 
@@ -69,15 +69,16 @@ public class MailruTemplate extends AbstractOAuth2ApiBinding implements Mailru {
                 jsonConverter.setSupportedMediaTypes(mTypes);
 
                 ObjectMapper objectMapper = new ObjectMapper();
-                //objectMapper.registerModule(new MailruModule());
                 jsonConverter.setObjectMapper(objectMapper);
             }
         }
     }
 
     private void initSubApis() {
-        usersOperations = new UsersTemplate(clientId, clientSecret, getRestTemplate(), accessToken, isAuthorized());
-        wallOperations = new WallTemplate(clientId, clientSecret, getRestTemplate(), accessToken, isAuthorized());
+        usersOperations = new UsersTemplate(clientId, clientSecret, privateKey, getRestTemplate(), accessToken,
+                isAuthorized());
+        wallOperations = new WallTemplate(clientId, clientSecret, privateKey, getRestTemplate(), accessToken,
+                isAuthorized());
     }
 
     @Override

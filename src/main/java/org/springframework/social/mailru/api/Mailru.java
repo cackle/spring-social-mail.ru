@@ -20,7 +20,7 @@ import org.springframework.social.ApiBinding;
 public interface Mailru extends ApiBinding {
     String PROVIDER_ID = "mailru";
 
-    public UsersOperations usersOperations();
+    UsersOperations usersOperations();
 
-    public WallOperations wallOperations();
+    WallOperations wallOperations();
 }

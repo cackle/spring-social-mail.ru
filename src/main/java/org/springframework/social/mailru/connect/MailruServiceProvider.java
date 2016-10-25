@@ -29,13 +29,16 @@ public class MailruServiceProvider extends AbstractOAuth2ServiceProvider<Mailru>
 
     private final String clientSecret;
 
-	public MailruServiceProvider(String clientId, String clientSecret) {
+    private final String privateKey;
+
+	public MailruServiceProvider(String clientId, String clientSecret, String privateKey) {
         super(new MailruOAuth2Template(clientId, clientSecret));
         this.clientId = clientId;
         this.clientSecret = clientSecret;
+        this.privateKey = privateKey;
 	}
 
     public Mailru getApi(String accessToken) {
-		return new MailruTemplate(clientId, clientSecret, accessToken);
+		return new MailruTemplate(clientId, clientSecret, accessToken, privateKey);
 	}
 }

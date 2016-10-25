@@ -12,7 +12,7 @@ import java.util.TreeMap;
 
 public abstract class AbstractMailruOperations {
 
-    private static final String MAILRU_REST_URL = "http://appsmail.ru/platform/api?";
+    private static final String MAILRU_REST_URL = "https://appsmail.ru/platform/api?";
 
     private final SortedMap<String, String> params = new TreeMap<String, String>(new Comparator<String>() {
         @Override
@@ -29,12 +29,16 @@ public abstract class AbstractMailruOperations {
 
     private final String clientSecret;
 
-    public AbstractMailruOperations(String clientId, String clientSecret, String accessToken, boolean isAuthorized) {
+    private final String privateKey;
+
+    public AbstractMailruOperations(String clientId, String clientSecret, String accessToken, String privateKey,
+                                    boolean isAuthorized) {
 
         this.isAuthorized = isAuthorized;
         this.accessToken = accessToken;
         this.clientId = clientId;
         this.clientSecret = clientSecret;
+        this.privateKey = privateKey;
 
         params.put("app_id", this.clientId);
         params.put("session_key", this.accessToken);
@@ -47,6 +51,10 @@ public abstract class AbstractMailruOperations {
         }
     }
 
+    protected String getUrl() {
+        return MAILRU_REST_URL;
+    }
+
     protected String makeOperationURL(Map<String, String> params) {
         this.params.putAll(params);
 
@@ -55,6 +63,10 @@ public abstract class AbstractMailruOperations {
 
         for (String param : this.params.keySet()) {
             String value = this.params.get(param);
+            if(value == null) {
+                continue;
+            }
+
             signature.append(param).append("=").append(value);
             url.append(param).append("=").append(URLEncoder.encode(value)).append("&");
         }

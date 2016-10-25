@@ -24,9 +24,9 @@ import org.springframework.social.mailru.api.Mailru;
  */
 public class MailruConnectionFactory extends OAuth2ConnectionFactory<Mailru> {
 
-	public MailruConnectionFactory(String clientId, String clientSecret) {
+	public MailruConnectionFactory(String clientId, String clientSecret, String privateKey) {
 		super(Mailru.PROVIDER_ID,
-				new MailruServiceProvider(clientId, clientSecret), new MailruAdapter());
+				new MailruServiceProvider(clientId, clientSecret, privateKey), new MailruAdapter());
 		setScope("stream");
 	}
 }

@@ -19,10 +19,10 @@ public class UsersTemplate extends AbstractMailruOperations implements UsersOper
 
     private final RestTemplate restTemplate;
 
-    public UsersTemplate(String clientId, String clientSecret, RestTemplate restTemplate,
+    public UsersTemplate(String clientId, String clientSecret, String privateKey, RestTemplate restTemplate,
         String accessToken, boolean isAuthorizedForUser) {
 
-        super(clientId, clientSecret, accessToken, isAuthorizedForUser);
+        super(clientId, clientSecret, accessToken, privateKey, isAuthorizedForUser);
         this.restTemplate = restTemplate;
     }
 
