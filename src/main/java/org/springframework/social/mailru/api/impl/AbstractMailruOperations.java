@@ -1,16 +1,18 @@
 package org.springframework.social.mailru.api.impl;
 
+import org.springframework.social.MissingAuthorizationException;
+import org.springframework.social.mailru.api.Mailru;
+import org.springframework.util.DigestUtils;
+
 import java.net.URLEncoder;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import org.springframework.social.MissingAuthorizationException;
-import org.springframework.util.DigestUtils;
 
 public abstract class AbstractMailruOperations {
 
-    private static final String MAILRU_REST_URL = "http://appsmail.ru/platform/api?";
+    private static final String MAILRU_REST_URL = "https://appsmail.ru/platform/api?";
 
     private final SortedMap<String, String> params = new TreeMap<String, String>(new Comparator<String>() {
         @Override
@@ -27,12 +29,16 @@ public abstract class AbstractMailruOperations {
 
     private final String clientSecret;
 
-    public AbstractMailruOperations(String clientId, String clientSecret, String accessToken, boolean isAuthorized) {
+    private final String privateKey;
+
+    public AbstractMailruOperations(String clientId, String clientSecret, String accessToken, String privateKey,
+                                    boolean isAuthorized) {
 
         this.isAuthorized = isAuthorized;
         this.accessToken = accessToken;
         this.clientId = clientId;
         this.clientSecret = clientSecret;
+        this.privateKey = privateKey;
 
         params.put("app_id", this.clientId);
         params.put("session_key", this.accessToken);
@@ -41,8 +47,12 @@ public abstract class AbstractMailruOperations {
 
     protected void requireAuthorization() {
         if (!isAuthorized) {
-            throw new MissingAuthorizationException();
+            throw new MissingAuthorizationException(Mailru.PROVIDER_ID);
         }
+    }
+
+    protected String getUrl() {
+        return MAILRU_REST_URL;
     }
 
     protected String makeOperationURL(Map<String, String> params) {
@@ -53,16 +63,20 @@ public abstract class AbstractMailruOperations {
 
         for (String param : this.params.keySet()) {
             String value = this.params.get(param);
+            if(value == null) {
+                continue;
+            }
+
             signature.append(param).append("=").append(value);
             url.append(param).append("=").append(URLEncoder.encode(value)).append("&");
         }
         signature.append(clientSecret);
-        url.append("sig=").append(encodeSignarure(signature.toString()));
+        url.append("sig=").append(encodeSignature(signature.toString()));
 
         return url.toString();
     }
 
-    private String encodeSignarure(String sign) {
+    private String encodeSignature(String sign) {
         return DigestUtils.md5DigestAsHex(sign.getBytes());
     }
 }
